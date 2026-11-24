@@ -1,36 +1,38 @@
 #include <stdio.h>
-#include <ctype.h>  // For toupper()
-#include <stdlib.h> // For exit()
 
 int main() {
-    FILE *inputFile, *outputFile;
-    int ch; // Use int to handle EOF properly
+    char filename[100];
+    FILE *fp;
+    char ch;
 
-    // Open input file for reading
-    inputFile = fopen("input.txt", "r");
-    if (inputFile == NULL) {
-        perror("Error opening input.txt");
+    // Prompt the user for a filename
+    printf("Enter filename: ");
+    if (fgets(filename, sizeof(filename), stdin) != NULL) {
+        // Remove trailing newline if present
+        int len = strlen(filename);
+        if (len > 0 && filename[len - 1] == '\n') {
+            filename[len - 1] = '\0';
+        }
+    } else {
+        printf("Error: No input provided.\n");
         return 1;
     }
 
-    // Open output file for writing
-    outputFile = fopen("output.txt", "w");
-    if (outputFile == NULL) {
-        perror("Error opening output.txt");
-        fclose(inputFile);
+    // Try to open the file in read mode
+    fp = fopen(filename, "r");
+    if (fp == NULL) {
+        printf("Error: File does not exist!\n");
         return 1;
     }
 
-    // Read each character from input.txt
-    while ((ch = fgetc(inputFile)) != EOF) {
-        // Convert lowercase letters to uppercase
-        fputc(toupper(ch), outputFile);
+    // File opened successfully, read and display its content
+    printf("File opened successfully.\n");
+    while ((ch = fgetc(fp)) != EOF) {
+        putchar(ch);
     }
 
-    // Close files
-    fclose(inputFile);
-    fclose(outputFile);
-
-    printf("Conversion complete. Check output.txt for results.\n");
+    // Close the file
+    fclose(fp);
     return 0;
 }
+
